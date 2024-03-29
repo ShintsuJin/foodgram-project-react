@@ -1,4 +1,4 @@
-name: Main Kittygram workflow
+name: Main Foodgram workflow
 
 on:
   push:
@@ -70,11 +70,9 @@ jobs:
         node-version: 18
 
     - name: Install dependencies
-
       run: |
         cd frontend/
         npm ci
-
     - name: Test frontend
       # Запускаем тесты
       run: |
