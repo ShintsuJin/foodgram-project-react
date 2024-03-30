@@ -1,8 +1,9 @@
-from django.core.validators import RegexValidator, MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
-from .consts import MAX_LENGTH_TEXT
 from users.models import User
+
+from .consts import MAX_LENGTH_TEXT
 
 
 class Tag(models.Model):

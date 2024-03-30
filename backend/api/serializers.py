@@ -5,9 +5,9 @@ from django.core.validators import RegexValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
-from recipes.models import (Recipe, Ingredient, Tag,
-                            IngredientRecipe, Favorite, ShoppingList)
-from users.models import User, Subscribe
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingList, Tag)
+from users.models import Subscribe, User
 
 
 class Base64ImageField(serializers.ImageField):

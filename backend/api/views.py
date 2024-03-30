@@ -1,26 +1,27 @@
+from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import (IsAuthenticatedOrReadOnly,
-                                        SAFE_METHODS)
-from rest_framework.viewsets import ReadOnlyModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status, permissions
-from rest_framework.response import Response
-from rest_framework.decorators import action
 from djoser import utils
 from djoser.conf import settings as sett
-from django.contrib.auth import update_session_auth_hash
-from .serializers import (TagSerializer, IngredientSerializer,
-                          CustomUserSerializer, SubscribeSerializer,
-                          RecipeListSerializer, RecipeCreateSerializer,
-                          RecipeSubSerializer, CustomUserCreateSerializer,
-                          SetPasswordSerializer)
-from recipes.models import (Tag, Ingredient, Recipe,
-                            ShoppingList, IngredientRecipe, Favorite)
-from users.models import User, Subscribe
-from .permissions import IsAuthorOrAdminOrReadOnly
-from .filters import RecipeFilter, IngredientFilter
-from .utils import txt_generation
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
+
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingList, Tag)
+from users.models import Subscribe, User
+
+from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
+from .permissions import IsAuthorOrAdminOrReadOnly
+from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+                          IngredientSerializer, RecipeCreateSerializer,
+                          RecipeListSerializer, RecipeSubSerializer,
+                          SetPasswordSerializer, SubscribeSerializer,
+                          TagSerializer)
+from .utils import txt_generation
 
 
 class TagViewSet(ReadOnlyModelViewSet):
