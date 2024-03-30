@@ -22,6 +22,7 @@ git clone https://github.com/ShintsuJin/foodgram-project-react
 ```
 
 Перейти в корневую директорию
+
 ```
 cd foodgram-project-react
 ```
