@@ -11,11 +11,11 @@ class RecipeFilter(FilterSet):
     is_favorited = filters.BooleanFilter(method="get_is_favorited")
     is_in_shopping_cart = filters.BooleanFilter(
         method="get_is_in_shopping_cart")
-    author = filters.CharFilter(field_name='author_id')
+    author = filters.CharFilter(field_name="author_id")
 
     class Meta:
         model = Recipe
-        fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
+        fields = ("tags", "author", "is_favorited", "is_in_shopping_cart")
 
     def get_is_favorited(self, queryset, key, value):
         user = self.request.user
@@ -31,8 +31,9 @@ class RecipeFilter(FilterSet):
 
 
 class IngredientFilter(FilterSet):
-    name = filters.CharFilter(lookup_expr='icontains')
+    name = filters.CharFilter(lookup_expr="icontains")
 
     class Meta:
         model = Ingredient
-        fields = ['name']
+        fields = ["name"]
+

@@ -12,7 +12,6 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingList, Tag)
 from users.models import Subscribe, User
-
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import LimitPageNumberPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
@@ -113,7 +112,8 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     def subscriptions(self, request):
         """View to list subscriptions of the authenticated user."""
         subscriptions = Subscribe.objects.filter(user=request.user)
-        authors = [subscription.author for subscription in subscriptions]
+        authors_ids = subscriptions.values_list('author_id', flat=True)
+        authors = User.objects.filter(id__in=authors_ids)
         result_page = self.paginate_queryset(authors)
         serializer = SubscribeSerializer(
             result_page,

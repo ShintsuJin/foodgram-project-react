@@ -2,7 +2,6 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 from users.models import User
-
 from .consts import MAX_LENGTH_TEXT
 
 
@@ -52,7 +51,7 @@ class Ingredient(models.Model):
     """Model for ingredients."""
     name = models.CharField(
         max_length=MAX_LENGTH_TEXT,
-        verbose_name='Ингридиент'
+        verbose_name='Ингредиент'
     )
     measurement_unit = models.CharField(
         max_length=MAX_LENGTH_TEXT,
@@ -61,8 +60,8 @@ class Ingredient(models.Model):
 
     class Meta:
         ordering = ('name',)
-        verbose_name = 'Ингридиент'
-        verbose_name_plural = 'Ингридиенты'
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return self.name
@@ -86,7 +85,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         'Ingredient',
         through='IngredientRecipe',
-        verbose_name='Ингридиенты',
+        verbose_name='Ингредиенты',
     )
     image = models.ImageField(
         upload_to='recipes/images/',
@@ -136,8 +135,8 @@ class IngredientRecipe(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Количество ингридиента'
-        verbose_name_plural = 'Количество ингридиентов'
+        verbose_name = 'Количество ингредиента'
+        verbose_name_plural = 'Количество ингредиентов'
         ordering = ('amount',)
         constraints = [
             models.UniqueConstraint(
