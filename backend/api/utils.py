@@ -29,8 +29,6 @@ def txt_generation(value_list):
 
     return response
 
-
-
     # final_list = {}
     # for item in value_list:
     #     name = item[0]
