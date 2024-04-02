@@ -227,12 +227,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='download_shopping_cart',
             permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
-        ingredients = (
+        ingredient_queryset = (
             IngredientRecipe.objects
             .filter(recipe__shoppinglist_recipe__user=request.user)
-            .order_by('ingredient__name')
-            .values_list(
-                'ingredient__name',
-                'ingredient__measurement_unit',
-                'amount'))
-        return txt_generation(ingredients)
+            .select_related('ingredient')
+        )
+        return txt_generation(ingredient_queryset)
