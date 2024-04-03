@@ -84,10 +84,14 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class RecipeSubSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
+
+    def get_image(self, obj):
+        return obj.image.url
 
 
 class SubscribeSerializer(CustomUserSerializer):
@@ -174,12 +178,16 @@ class RecipeListSerializer(serializers.ModelSerializer):
         read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = ('id', 'tags', 'author', 'ingredients',
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
+
+    def get_image(self, obj):
+        return obj.image.url
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
