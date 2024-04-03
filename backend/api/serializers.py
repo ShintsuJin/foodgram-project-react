@@ -1,8 +1,8 @@
 import base64
 
-from django.db import transaction
 from django.core.files.base import ContentFile
 from django.core.validators import RegexValidator
+from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
