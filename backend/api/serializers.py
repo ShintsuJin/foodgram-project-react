@@ -84,7 +84,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class RecipeSubSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField(source='image')
 
     class Meta:
         model = Recipe
@@ -169,22 +168,18 @@ class RecipeListSerializer(serializers.ModelSerializer):
     """Serializer to display recipes."""
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
-    ingredients = serializers.SerializerMethodField(read_only=True)
+    ingredients = IngredientRecipeSerializers(
+        many=True,
+        source='recipe_ingredients',
+        read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
-    image = serializers.SerializerMethodField(source='image')
 
     class Meta:
         model = Recipe
         fields = ('id', 'tags', 'author', 'ingredients',
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time')
-
-    def get_ingredients(self, obj):
-        queryset = (IngredientRecipe.objects.filter(recipe=obj).values(
-            'id', 'ingredient__name', 'ingredient__measurement_unit', 'amount'
-        ))
-        return list(queryset)
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -286,7 +281,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        super().update(instance, validated_data)
         tags = validated_data.get("tags")
         instance.tags.set(tags)
         instance.ingredients.clear()
