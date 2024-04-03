@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 from users.models import User
+
 from .consts import MAX_LENGTH_TEXT
 
 

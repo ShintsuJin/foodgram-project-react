@@ -1,5 +1,5 @@
-from django.shortcuts import HttpResponse
 from django.db.models import Sum
+from django.shortcuts import HttpResponse
 
 
 def txt_generation(value_list):
