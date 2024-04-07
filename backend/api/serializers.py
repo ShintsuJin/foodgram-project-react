@@ -219,6 +219,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         many=True, queryset=Tag.objects.all())
     ingredients = CreateIgredientRecipeSerializer(many=True)
     image = Base64ImageField()
+    cooking_time = serializers.IntegerField()
 
     class Meta:
         model = Recipe
@@ -226,12 +227,17 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                   'ingredients', 'name', 'image',
                   'text', 'cooking_time',)
 
-    def validate(self, obj):
+    def validate(self, data):
         if not self.initial_data.get('ingredients'):
             raise serializers.ValidationError('No ingredients provided.')
         if not self.initial_data.get('tags'):
             raise serializers.ValidationError('No tags provided.')
-        return obj
+        return data
+
+    def validate_cooking_time(self, cooking_time):
+        if cooking_time < 1:
+            raise serializers.ValidationError(
+                'Cooking time should be at least one minute')
 
     def validate_tags(self, data):
         tags = self.initial_data.get('tags')
@@ -246,22 +252,23 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return data
 
     def validate_ingredients(self, data):
+        if not data:
+            raise serializers.ValidationError(
+                'Need to set up ingredients!'
+            )
         ingredients = self.initial_data.get('ingredients')
         if len(ingredients) == 0:
             raise serializers.ValidationError(
                 'Choose at least one ingredient.')
-
         ingredients_list = []
         for ingredient in ingredients:
-
             if ingredient.get('id') in ingredients_list:
                 raise serializers.ValidationError(
                     'Ingredients are not unique')
-            if ingredient.get('amount') in (None, 0):
-                raise serializers.ValidationError(
-                    'Recipe cant be without ingredients')
             ingredients_list.append(ingredient.get('id'))
-
+            # if int(ingredient.get('amount')) < 1:
+            #     raise serializers.ValidationError(
+            #         'Amount should be at least one minute')
         return data
 
     def create_ingredients(self, recipe, ingredients_data):
@@ -279,8 +286,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         author = self.context['request'].user
-        tags_data = validated_data.pop('tags', [])
-        ingredients_data = validated_data.pop('ingredients', [])
+        tags_data = validated_data.pop('tags')
+        ingredients_data = validated_data.pop('ingredients')
 
         recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags_data)
