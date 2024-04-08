@@ -207,10 +207,17 @@ class RecipeListSerializer(serializers.ModelSerializer):
 class CreateIgredientRecipeSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
 
     class Meta:
         model = IngredientRecipe
         fields = ('id', 'amount')
+
+    def validate_amount(self, value):
+        if value < 1:
+            raise serializers.ValidationError(
+                "Amount must be greater than or equal to 1")
+        return value
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
@@ -257,18 +264,14 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 'Need to set up ingredients!'
             )
         ingredients = self.initial_data.get('ingredients')
-        if len(ingredients) == 0:
-            raise serializers.ValidationError(
-                'Choose at least one ingredient.')
         ingredients_list = []
         for ingredient in ingredients:
-            if ingredient.get('id') in ingredients_list:
+            ingredient_id = ingredient['id']
+            if ingredient_id in ingredients_list:
                 raise serializers.ValidationError(
-                    'Ingredients are not unique')
-            ingredients_list.append(ingredient.get('id'))
-            # if int(ingredient.get('amount')) < 1:
-            #     raise serializers.ValidationError(
-            #         'Amount should be at least one minute')
+                    'Ingredients are not unique!'
+                )
+            ingredients_list.append(ingredient_id)
         return data
 
     def create_ingredients(self, recipe, ingredients_data):
